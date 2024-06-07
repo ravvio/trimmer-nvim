@@ -22,12 +22,21 @@ M.setup = function ( opts )
         events = opts.events
     end
 
+    local exclude = { }
+    if opts.exclude then
+        exclude = opts.exclude
+    end
+
     vim.api.nvim_create_autocmd(events, {
         group = autogroup,
         desc = "Trim whitespaces before writing buffer to file",
         callback = function (_)
             if M.trimmer_enabled then
-                M.trim()
+                local filetype, _ = vim.filetype.match({ buf = 0 })
+                vim.notify.notify(filetype)
+                if filetype ~= nil and not vim.tbl_contains(exclude, filetype) then
+                    M.trim()
+                end
             end
         end
     })

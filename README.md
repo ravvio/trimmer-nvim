@@ -32,6 +32,9 @@ or with options (here defaults are shown):
             enabled = true,
             -- events in which to set the autocommand
             events = { "BufWritePre" }
+            -- filetypes in which the trimmer will not be run
+            -- like `markdown` or `lua`
+            exclude = { }
         })
     end
 }

@@ -1,32 +1,50 @@
+local M = {}
 
 local autogroup = vim.api.nvim_create_augroup("trimmer", {clear = true})
 
-local trimmer_enabled = true
+M.trimmer_enabled = true
 
-local function trim()
+M.trim = function ()
     -- Save cursor position
     local cursor = vim.api.nvim_win_get_cursor(0)
     vim.cmd([[keeppatterns %s/\s\+$//e]])
     vim.api.nvim_win_set_cursor(0, cursor)
 end
 
-local function setup()
+M.setup = function ( opts )
 
-    vim.api.nvim_create_autocmd({"BufWritePre"}, {
+    if opts.enabled == false then
+        M.trimmer_enabled = false
+    end
+
+    local events = {"BufWritePre"}
+    if opts.event then
+        events = opts.event
+    end
+
+    vim.api.nvim_create_autocmd(events, {
         group = autogroup,
         desc = "Trim whitespaces before writing buffer to file",
         callback = function (_)
-            if trimmer_enabled then
-                trim()
+            if M.trimmer_enabled then
+                M.trim()
             end
         end
     })
 
     vim.api.nvim_create_user_command(
+        "TrimmerTrim",
+        function (_)
+            M.trim()
+        end,
+        {}
+    )
+
+    vim.api.nvim_create_user_command(
         "TrimmerToggle",
         function (_)
-            trimmer_enabled = not trimmer_enabled
-            if trimmer_enabled then
+            M.trimmer_enabled = not M.trimmer_enabled
+            if M.trimmer_enabled then
                 vim.notify.notify("Trimmer Enabled")
             else
                 vim.notify.notify("Trimmer Disabled")
@@ -37,4 +55,4 @@ local function setup()
 
 end
 
-return { setup = setup }
+return M

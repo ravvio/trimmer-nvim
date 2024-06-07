@@ -18,8 +18,8 @@ M.setup = function ( opts )
     end
 
     local events = {"BufWritePre"}
-    if opts.event then
-        events = opts.event
+    if opts.events then
+        events = opts.events
     end
 
     vim.api.nvim_create_autocmd(events, {

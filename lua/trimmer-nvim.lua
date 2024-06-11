@@ -33,7 +33,6 @@ M.setup = function ( opts )
         callback = function (_)
             if M.trimmer_enabled then
                 local filetype, _ = vim.filetype.match({ buf = 0 })
-                vim.notify.notify(filetype)
                 if filetype ~= nil and not vim.tbl_contains(exclude, filetype) then
                     M.trim()
                 end
